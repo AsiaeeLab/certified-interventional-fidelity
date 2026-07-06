@@ -1,0 +1,10 @@
+torch>=2.0
+torchvision
+numpy
+pandas
+matplotlib
+scipy
+transformer-lens>=2.0
+transformers
+einops
+seaborn

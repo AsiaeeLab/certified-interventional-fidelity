@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.venv/
+code/data/
+results/
+figures/
+.claude/
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+.DS_Store

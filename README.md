@@ -1,0 +1,81 @@
+# Certified Interventional Fidelity (CIF)
+
+Code for the paper:
+
+> Amir Asiaee. **Certified Interventional Fidelity: Anytime-Valid, Adaptive Evaluation of Causal Claims in Mechanistic Interpretability.** *Proceedings of the 42nd Conference on Uncertainty in Artificial Intelligence (UAI)*, PMLR 337, 2026.
+
+CIF treats interventional interpretability metrics (IIA, activation patching, path patching, causal scrubbing, circuit completeness) as bounded causal estimands and wraps them with anytime-valid confidence sequences, so fidelity claims stay valid under peeking, sequential stopping, and adaptive stress testing.
+
+```bibtex
+@inproceedings{asiaee2026cif,
+  title     = {Certified Interventional Fidelity: Anytime-Valid, Adaptive Evaluation of Causal Claims in Mechanistic Interpretability},
+  author    = {Asiaee, Amir},
+  booktitle = {Proceedings of the 42nd Conference on Uncertainty in Artificial Intelligence (UAI)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {337},
+  year      = {2026}
+}
+```
+
+## Layout
+
+```
+code/
+  cif.py                        core library: Hoeffding + betting CS trackers (incl. paired
+                                variants), adaptive importance sampling, certification
+  compile.py, pruning.py        abstraction construction (hard/soft/variance/random)
+  models.py, mnist_utils.py     MNIST MLP + data plumbing
+  iia.py                        interchange-intervention evaluation
+  e1_certified_iia.py           E1: certified IIA on MNIST abstractions
+  e2_gpt2_patching.py           E2: certified patching effects, GPT-2 Small IOI circuits
+  e3_sensitivity.py             E3: sensitivity to the intervention distribution
+  e4_coverage.py                E4: coverage validation (500 runs per protocol)
+  adaptive_study.py             adaptive-vs-i.i.d. study + alpha sweep (paper Appendix E)
+  adaptive_study_history.py     history-updated failure-rate proposal arm
+  adaptive_study_matched_seeds.py  matched low-F seeds for the 5x5x5 comparison
+  run_all.py                    E1-E4 in sequence
+  plot_v2.py                    all main-text figures from results/*.csv
+  plot_adaptive.py              Appendix E figures from results/*.csv
+  artifacts/mnist_mlp_seed0.pt  cached MNIST MLP checkpoint (seed 0)
+results/                        CSV outputs (created by the scripts)
+figures/                        PDF/PNG figures (created by the plot scripts)
+```
+
+## Setup
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+MNIST downloads automatically via torchvision on first run. E2 downloads GPT-2 Small through `transformer_lens`. A GPU helps for E2 but nothing requires one.
+
+## Reproducing the paper
+
+Every table and figure in the paper comes from the CSVs these scripts write.
+
+```bash
+# E1-E4 (writes results/e1_*.csv ... e4_coverage.csv)
+python code/run_all.py
+
+# E1 paired comparison only, from the cached checkpoint
+python code/e1_certified_iia.py --paired-only
+
+# Adaptive-vs-i.i.d. study + alpha sweep (paper Appendix E; writes
+# results/adaptive_vs_iid_v2.csv and results/alpha_sweep.csv)
+python code/adaptive_study.py
+python code/adaptive_study_history.py
+python code/adaptive_study_matched_seeds.py
+
+# Figures
+python code/plot_v2.py          # main-text figures
+python code/plot_adaptive.py    # Appendix E figures
+```
+
+Paper-to-code map: the E1 tables and figures come from `e1_certified_iia.py`; the E2 (GPT-2 IOI) table and figures from `e2_gpt2_patching.py`; the metric-sensitivity figure from `e3_sensitivity.py`; the coverage table from `e4_coverage.py`; the adaptive-vs-i.i.d. appendix from the `adaptive_study*` scripts; the extra-pruning-level appendix table from `e1_certified_iia.py` output.
+
+The drop-in confidence-sequence trackers (`CIFTracker`, `BettingCSTracker`, and their paired variants) live in `code/cif.py` and have no dependencies beyond NumPy/PyTorch; `update(z, w=1)` plus `lcb`/`ucb` queries is the whole API.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
