@@ -1,0 +1,9 @@
+cs_type,pair,keep,mask_p,n,mu_hat,radius,significant,method_1_r_hat,method_2_r_hat
+hoeffding,cip-affine_vs_cip-const,256,0.5,10000,-0.4556,0.06724174373190667,True,0.4416,0.8972
+betting,cip-affine_vs_cip-const,256,0.5,10000,-0.4556,0.02217318115234379,True,0.4416,0.8972
+hoeffding,cip-const_vs_vbp,256,0.5,10000,0.579,0.06724174373190667,True,0.8972,0.3182
+betting,cip-const_vs_vbp,256,0.5,10000,0.579,0.02115656280517575,True,0.8972,0.3182
+hoeffding,vbp_vs_random,256,0.5,10000,-0.1561,0.06724174373190667,True,0.3182,0.4743
+betting,vbp_vs_random,256,0.5,10000,-0.15610000000000002,0.016592474365234366,True,0.3182,0.4743
+hoeffding,cip-affine_vs_random,256,0.5,10000,-0.0327,0.06724174373190667,False,0.4416,0.4743
+betting,cip-affine_vs_random,256,0.5,10000,-0.03269999999999995,0.015689109802246137,True,0.4416,0.4743
